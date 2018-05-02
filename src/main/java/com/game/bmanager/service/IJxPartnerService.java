@@ -1,0 +1,64 @@
+package com.game.bmanager.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.game.bmanager.entity.JxPartner;
+import com.game.modules.orm.Page;
+import com.game.modules.service.GenericManager;
+import com.game.smvc.entity.JxOrder;
+
+public interface IJxPartnerService extends GenericManager<JxPartner, Long> {
+	Page<JxPartner> querySubordinate(Page<JxPartner> page,Long parentid);
+
+	Page<JxPartner> querySelectResourcer(Page<JxPartner> pageResourcer, String par_level);
+	
+	Page<JxPartner> dimQuery(Page<JxPartner> pageResourcer, String par_level,String par_name,Long parId);
+
+	Page<JxPartner> queryProvince(Page<JxPartner> page,String userid);
+
+	Page<JxPartner> dimQueryProvince(Page<JxPartner> page, String parName,Long id,String userid,String lever);
+
+	String findCityCodeByCity(String par_level, String s_province, String s_city, String s_county);
+
+	Integer countNum();
+
+	String queryLever(String userid);
+	//根据产品经理编号查询订单
+	//public String querySubordinateNo(Long id);
+
+	List<Map<String, List<Map<String, Object>>>> querySubordinateNo(Long parentid);
+
+	List<Map<String, Object>> findselectNo(Long id);
+
+	Page<JxPartner> querySubordinates(Page<JxPartner> page, String parentid);
+
+	String findParentid(Long id);
+
+	Page<JxPartner> querySubordinatess(Page<JxPartner> page, String parentid,
+			Long id);
+
+	Page<JxPartner> querySelectResourcerRT(Page<JxPartner> pageResourcer,
+			String par_levels);
+
+	Page<JxPartner> dimQueryRT(Page<JxPartner> pageResourcer,
+			String par_levels, String par_names, Long parId);
+
+	String findParOther(Long id);
+
+	String findId(String par_other);
+
+	int deleteAccUser(String ids1);
+
+	int deleteUserRole(String ids1);
+
+	Page<JxPartner> queryProvinceByYYS(Page<JxPartner> page, String userid);
+
+	List<Map<String, Object>> selectAll();
+
+	Page<JxPartner> queryProvinces(Page<JxPartner> page, String userid);
+
+	int updatePartner(String ord_managerno);
+
+
+}	
