@@ -48,6 +48,7 @@ public class JxOrderItem{
 	 private Long u_id;
 	 private int ord_multiple;
 	 private int ord_number;
+	 private Float pay_price;
 	// private int orditem_pledge;
 	 
 	 public JxOrderItem() {
@@ -224,6 +225,16 @@ public class JxOrderItem{
 
 	public void setOrd_number(int ord_number) {
 		this.ord_number = ord_number;
+	}
+
+
+	public Float getPay_price() {
+		return pay_price;
+	}
+
+
+	public void setPay_price(Float pay_price) {
+		this.pay_price = pay_price;
 	}
 
 

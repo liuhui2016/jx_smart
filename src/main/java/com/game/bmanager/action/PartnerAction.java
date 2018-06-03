@@ -84,9 +84,16 @@ public class PartnerAction extends CrudActionSupport<JxPartner>{
                 s_city="地级市";
                 s_county="市、县级市";
             }else if(entity.getPAR_LEVEL().equals("2")){
-                s_province=pararea.split("-")[0];
-                s_city=pararea.split("-")[1];
-                s_county="市、县级市";
+            	if(s_city == null){
+            		s_province=pararea;
+                    s_city="地级市";
+                    s_county="市、县级市";
+            	}else{
+            		  s_province=pararea.split("-")[0];
+                      s_city=pararea.split("-")[1];
+                      s_county="市、县级市";
+            	}
+              
             }else if(entity.getPAR_LEVEL().equals("-1") || entity.getPAR_LEVEL().equals("-2") ||entity.getPAR_LEVEL().equals("-3")){
             	 s_province=pararea.split("-")[0];
                  s_city=pararea.split("-")[1];
@@ -115,7 +122,6 @@ public class PartnerAction extends CrudActionSupport<JxPartner>{
     		String lever = null;
             String userid = user.getUsername();
         	if(StringUtils.isBlank(parName) && parId == null){
-        		System.out.println("1");
         		page = partnerService.queryProvince(page,userid);
         	}else{
         		if(!"admin".equals(userid)){
@@ -128,7 +134,6 @@ public class PartnerAction extends CrudActionSupport<JxPartner>{
     		String lever = null;
             String userid = user.getUsername();
         	if(StringUtils.isBlank(parName) && parId == null){
-        		System.out.println("2");
         		page = partnerService.queryProvince(page,userid);
         	}else{
         		if(!"admin".equals(userid)){

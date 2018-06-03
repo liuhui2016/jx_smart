@@ -72,8 +72,20 @@ public class JxProductSeviceImpl extends GenericManagerImpl<JxProduct, Long>
 		List<Map<String, Object>> listcolor = this.jdbcTemplate.queryForList(sql1,
 				id);
 				
-		String sql2 = "select pay_typename paytype,CAST(pay_totalmoney AS CHAR(20)) price,pay_pledge from jx_pay where pay_typeid=? order by pay_typename";
+		String sql2 = "select pay_typename paytype,CAST(pay_totalmoney AS CHAR(20)) price,pay_pledge,pay_price from jx_pay where pay_typeid=? order by pay_typename";
 		List<Map<String, Object>> listpay = this.jdbcTemplate.queryForList(sql2,id);
+		/*Map<String, Object> map2 = listpay.get(0);
+		String s = (String) map2.get("price");
+		System.out.println("s:"+s);
+		//int s2 = Integer.parseInt(s.toString());
+		Double s2 = Double.valueOf(s);
+		s2 = s2 * 3;
+		map2.put("price", s2);
+		Map<String, Object> map3 = listpay.get(1);
+		String s1 = (String) map3.get("price");
+		Double s4 = Double.valueOf(s1);
+		s4 = s4 * 3;
+		map3.put("price", s4);*/
 		List<Map<String, List<Map<String, Object>>>> l = new ArrayList<Map<String, List<Map<String, Object>>>>();
 		Map<String, List<Map<String, Object>>> map = new HashMap<String, List<Map<String, Object>>>();
 		map.put("detail", list);

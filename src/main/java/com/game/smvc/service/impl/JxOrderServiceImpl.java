@@ -150,7 +150,20 @@ public class JxOrderServiceImpl extends GenericManagerImpl<JxOrder, Long>
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, ono);
 
 		String sql2 = "select pay_typename paytype,CAST(pay_totalmoney AS CHAR(20)) price from jx_pay where pay_typeid=?";
-
+		
+	/*	String sql3 = "SELECT count(*) FROM jx_order where ord_no= '"+ono+"' and ord_status in(4,5)";
+		int number = jdbcTemplate.queryForInt(sql3);
+		Map<String, Object> m = list.get(0);
+		if(number == 0){//第一次续费
+			Float price = (Float) m.get("price");
+			price = price - 200;
+			m.put("price", price);
+		}else if(number == 1){//第二次续费
+			Float price = (Float) m.get("price");
+			price = price - 300;
+			m.put("price", price);
+		}*/
+		
 		List<Map<String, Object>> listpay = this.jdbcTemplate.queryForList(
 				sql2, productId);
 		List<Map<String, List<Map<String, Object>>>> l = new ArrayList<Map<String, List<Map<String, Object>>>>();
@@ -158,6 +171,7 @@ public class JxOrderServiceImpl extends GenericManagerImpl<JxOrder, Long>
 		map.put("orderdetail", list);
 		map.put("paytype", listpay);
 		l.add(map);
+		System.out.println(l);
 		return l;
 
 	}
@@ -330,7 +344,7 @@ public class JxOrderServiceImpl extends GenericManagerImpl<JxOrder, Long>
 
 	@Override
 	public Map<String, Object> findTotalPrices(String fimOrderNo) {
-		String sql = "select sum(ord_price) price from jx_order where fim_ord_no = '"
+		String sql = "select sum(ord_price) price,sum(sale_price) sale_price from jx_order where fim_ord_no = '"
 				+ fimOrderNo + "'";
 		return jdbcTemplate.queryForMap(sql);
 	}
@@ -425,52 +439,44 @@ public class JxOrderServiceImpl extends GenericManagerImpl<JxOrder, Long>
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String sql = "select * from jx_order where ";
 		if(ord_managerno != null && ord_status ==null && ord_no == null && pro_id == null && adr_id == null && pro_no == null && ord_addtime == null && ord_modtime == null){
-			System.out.println("01"+ord_managerno);
 			sql = sql + "ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		if(ord_status != null && !ord_status.equals("") && ord_managerno != null){
-			System.out.println("02");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "ord_status like '%" + ord_status + "%' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		if(ord_no != null && !ord_no.equals("") && ord_managerno != null){
-			System.out.println("03");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "ord_no like '%" + ord_no + "%' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		} 
 		if(pro_id != null && ord_managerno != null && !pro_id.equals("")){
-			System.out.println("04");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "pro_id like '%" + pro_id + "%' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		if(adr_id != null && !adr_id.equals("") && ord_managerno != null){
-			System.out.println("05");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "adr_id like '%" + adr_id + "%' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		if(pro_no != null && !pro_no.equals("") && ord_managerno != null){
-			System.out.println("06");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "pro_no like '%" + pro_no + "%' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		if(ord_addtime != null && ord_modtime == null && ord_managerno != null){
-			System.out.println("07");
 			String addtime = sdf.format(ord_addtime);
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "ord_addtime >= '"+addtime+"' and ord_managerno like '%" + ord_managerno + "%'";
-			System.out.println("sql:"+sql);
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
@@ -484,14 +490,12 @@ public class JxOrderServiceImpl extends GenericManagerImpl<JxOrder, Long>
 		if(ord_addtime != null && ord_modtime != null && ord_managerno != null){
 			String addtime = sdf.format(ord_addtime);
 			String modtime = sdf.format(ord_modtime);
-			System.out.println("08");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "ord_addtime >= '"+addtime+"' and ord_addtime < '"+modtime+"' and ord_managerno like '%" + ord_managerno + "%'";
 			page = orderDao.findPageOnSql(page, sql);
 			return page;
 		}
 		else{
-			System.out.println("09");
 			ord_managerno = ord_managerno.substring(1, 11);
 			sql = sql + "ord_managerno like '%" + ord_managerno + "%' ";
 			page = orderDao.findPageOnSql(page, sql);

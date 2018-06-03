@@ -335,7 +335,10 @@ $(document).ready(function() {
 					<input type="hidden" id = "amount" name = "amount" value="${a.total_amount}" /> 
 					<tr>
 						<td>合计:</td>
-						<td>${a.withdrawal_amount}</td>
+						<td>${a.withdrawal_amount}
+							元&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="trades!input.action?withdrawal_order=${a.withdrawal_order}">修改金额</td>
+						</td>
 						<%-- <td><fmt:formatNumber type="number" value="${((a.buy_combined+a.renewal_combined)*a.wdl_fee)+a.f_installation+a.lower_rebate}" pattern="#.00"/></td> --%>
 					</tr>
 					<input type="hidden" id = "w_state" name = "w_state" value="${a.withdrawal_state}" /> 

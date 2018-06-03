@@ -58,7 +58,8 @@ public class JxOrder implements Serializable {
 	private int ord_pledge;
 	private int ord_multiple;
 	private int trade_state;
-	
+	//优惠金额
+	private Float sale_price;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -286,6 +287,14 @@ public class JxOrder implements Serializable {
 
 	public void setTrade_state(int trade_state) {
 		this.trade_state = trade_state;
+	}
+
+	public Float getSale_price() {
+		return sale_price;
+	}
+
+	public void setSale_price(Float sale_price) {
+		this.sale_price = sale_price;
 	}
 
 	

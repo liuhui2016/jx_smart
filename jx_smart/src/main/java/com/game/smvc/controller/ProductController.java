@@ -87,6 +87,7 @@ public class ProductController {
 			String id = jsonObject.getString("id");
 			List<Map<String, List<Map<String, Object>>>> list = this.productService
 					.findProductById(Integer.parseInt(id));
+			System.out.println("list:"+list);
 			return new SecretResult(Errors.OK, list);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,6 +172,8 @@ public class ProductController {
 			JSONObject jsonObject = JSONObject.fromObject(authCode);
 			String ono = jsonObject.getString("ord_no");
 			String productId=jsonObject.getString("productId");
+			/*String ono = "865920726102544";
+			String productId="545";*/
 			List<Map<String, List<Map<String, Object>>>> list=this.jxOrderService.findAgainOrderDetailByOno(ono,productId);
 			return new SecretResult(Errors.OK, list);
 		} catch (JSONException e) {

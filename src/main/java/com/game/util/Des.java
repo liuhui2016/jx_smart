@@ -78,7 +78,7 @@ public class Des {
         	System.out.println(Des.encryptDES("jxuser"));
             System.out.println(Des.encryptDES("fDCGDFGfgZ!2^dgf*fGH#(RH"));
         	System.out.println(Des.encryptDES("jdbc:mysql://119.23.11.236:3306/jxcs?useUnicode=true&characterEncoding=utf-8"));
-        	//System.out.println(Des.decryptDES("K923PyP4UjW9XqDbvxu/u0TCU51ZFWxeSAsGUfryw01+3yJmxSuRAsk5JJu0 8eq220WZOEAZyfKZfgocgudbTuXimTA4afiikVJ2AVOwQls=9SZFAW7l"));
+        	System.out.println(Des.decryptDES("K923PyP4UjW9XqDbvxu/u0TCU51ZFWxeSAsGUfryw01+3yJmxSuRAsk5JJu0 8eq220WZOEAZyfKZfgocgudbTuXimTA4afiikVJ2AVOwQls=9SZFAW7l"));
         	//System.out.println(Des.decryptDES("WO5Ps4i9nYA=RCJ2Xmvh"));
         } catch (Exception e) {
             // TODO Auto-generated catch block

@@ -23,6 +23,7 @@ public class JxPay implements Serializable {
 	private Float pay_totalmoney;
 	private Float pay_flow;
 	private Float pay_unitprice;
+	private Float pay_price;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,6 +88,14 @@ public class JxPay implements Serializable {
 		this.pay_totalmoney = pay_totalmoney;
 		this.pay_flow = pay_flow;
 		this.pay_unitprice = pay_unitprice;
+	}
+
+	public Float getPay_price() {
+		return pay_price;
+	}
+
+	public void setPay_price(Float pay_price) {
+		this.pay_price = pay_price;
 	}
 	
 }

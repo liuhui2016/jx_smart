@@ -77,6 +77,10 @@ public class OrdersAction extends CrudActionSupport<JxOrder>{
 	
 	@Override
 	public String list() throws Exception {
+		JxPartner jxPartner = partnerService.findUnique("from JxPartner where id = '"+ord_managerno+"'");
+		if(jxPartner.getPAR_OTHER() != null){
+			ord_managerno = jxPartner.getPAR_OTHER();
+		}
 		page = orderService.findOrdManagernoToOrder(page,ord_managerno,ord_status,ord_no,pro_id,adr_id,pro_no,ord_addtime,ord_modtime);
 		return SUCCESS;
 	}

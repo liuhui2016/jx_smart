@@ -31,6 +31,7 @@ public class JxPartner implements java.io.Serializable {
 	private int total_number;
 	private int three_years_numbers;
 	private String card_number;
+	private String order_no;
 
 	public Long getPar_sellernum() {
 		return par_sellernum;
@@ -186,6 +187,14 @@ public class JxPartner implements java.io.Serializable {
 
 	public void setCard_number(String card_number) {
 		this.card_number = card_number;
+	}
+
+	public String getOrder_no() {
+		return order_no;
+	}
+
+	public void setOrder_no(String order_no) {
+		this.order_no = order_no;
 	}
 
 	

@@ -70,6 +70,7 @@ public class TradesAction extends CrudActionSupport<JxWithdrawalOrder> {
 	
 	private User user;
 	private String withdrawal_order;
+	private Float withdrawal_amount;
 	private JxPartnerRebate jxPartnerRebate;
 
 	private Long id;
@@ -150,7 +151,7 @@ public class TradesAction extends CrudActionSupport<JxWithdrawalOrder> {
 
 	@Override
 	public String input() throws Exception {
-		return null;
+		return INPUT;
 	}
 
 	@Override
@@ -469,6 +470,23 @@ public class TradesAction extends CrudActionSupport<JxWithdrawalOrder> {
 			}
 
 		}
+		
+		
+	//修改提现金额
+	public String updateMoney() throws Exception {
+		JxWithdrawalOrder jxWithdrawalOrder = jxWithdrawalOrderService.
+				findUnique("from JxWithdrawalOrder where withdrawal_order ='"+withdrawal_order+"'");
+		if(jxWithdrawalOrder == null){
+			page = jxWithdrawalOrderService.dimQueryOfRebates(page,withdrawal_order);
+			return SUCCESS;
+		}else{
+			jxWithdrawalOrder.setTotal_amount(withdrawal_amount);
+			jxWithdrawalOrder.setWithdrawal_amount(withdrawal_amount);
+			jxWithdrawalOrderService.save(jxWithdrawalOrder);
+			page = jxWithdrawalOrderService.dimQueryOfRebates(page,withdrawal_order);
+			return SUCCESS;
+		}
+	}
 
 	public JxWithdrawalOrder getJxWithdrawalOrder() {
 		return jxWithdrawalOrder;
@@ -540,6 +558,14 @@ public class TradesAction extends CrudActionSupport<JxWithdrawalOrder> {
 
 	public void setPages(Page<JxPartnerRebate> pages) {
 		this.pages = pages;
+	}
+
+	public Float getWithdrawal_amount() {
+		return withdrawal_amount;
+	}
+
+	public void setWithdrawal_amount(Float withdrawal_amount) {
+		this.withdrawal_amount = withdrawal_amount;
 	}
 	
 }

@@ -38,6 +38,7 @@ public class TradessAction extends CrudActionSupport<JxDrawPeople>{
 	private JxWithdrawalOrder jxWithdrawalOrder;
 	private JxPartnerRebate jxPartnerRebate;
 	private String withdrawal_order;
+	private String withdrawal_amount;
 	private String real_namer;
 	private String by_tkr_id;
 	private Page<JxDrawPeople> page = new Page<JxDrawPeople>(15);
@@ -133,7 +134,7 @@ public class TradessAction extends CrudActionSupport<JxDrawPeople>{
 		page = jxDrawPeopleService.dimQueryOfRebates(page,jxDrawPeople.getWithdrawal_order());
 		return SUCCESS;
 	}
-
+	
 	public JxWithdrawalOrder getJxWithdrawalOrder() {
 		return jxWithdrawalOrder;
 	}
@@ -219,6 +220,14 @@ public class TradessAction extends CrudActionSupport<JxDrawPeople>{
 
 	public void setBy_tkr_id(String by_tkr_id) {
 		this.by_tkr_id = by_tkr_id;
+	}
+
+	public String getWithdrawal_amount() {
+		return withdrawal_amount;
+	}
+
+	public void setWithdrawal_amount(String withdrawal_amount) {
+		this.withdrawal_amount = withdrawal_amount;
 	}
 
 	

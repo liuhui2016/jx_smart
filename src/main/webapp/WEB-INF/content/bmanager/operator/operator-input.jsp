@@ -192,11 +192,7 @@ function phoneChange(){
 			<table class="tab_cont" width="" cellspacing="0" cellpadding="0" border="0" align="left">
 				<tbody>
 				    <tr>
-				      <th class="first" width="130">标准信息
-				      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				      <a href="partners!input.action?authId=${authId}">睿投</a>
-				      </th>
+				      <th class="first" width="130">标准信息</th>
 				      <th class="last" colspan="3"></th>
 				    </tr>
 				    <tr>

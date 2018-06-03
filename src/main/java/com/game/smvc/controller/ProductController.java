@@ -34,6 +34,7 @@ import com.game.smvc.entity.JxOrder;
 import com.game.smvc.entity.JxOrderItem;
 import com.game.smvc.entity.JxPay;
 import com.game.smvc.entity.JxProduct;
+import com.game.smvc.entity.JxSale;
 import com.game.smvc.entity.JxShoppingCart;
 import com.game.smvc.entity.JxStatistical;
 import com.game.smvc.entity.result.Errors;
@@ -45,6 +46,7 @@ import com.game.smvc.service.IJxOrderItemService;
 import com.game.smvc.service.IJxOrderService;
 import com.game.smvc.service.IJxPayWayService;
 import com.game.smvc.service.IJxProductService;
+import com.game.smvc.service.IJxSaleService;
 import com.game.smvc.service.IJxShoppingCartService;
 import com.game.smvc.service.IJxStatisticalService;
 import com.game.smvc.service.IJxWaterService;
@@ -78,6 +80,8 @@ public class ProductController {
 	private IJxWaterService jxWaterService;
 	@Autowired
 	private IJxPartnerService partnerService;
+	@Autowired
+	private IJxSaleService jxSaleService;
 	
 	/**
 	 * 商品详情
@@ -91,6 +95,7 @@ public class ProductController {
 			String authCode = HttpUtil.getRquestParamsByIO(request);
 			JSONObject jsonObject = JSONObject.fromObject(authCode);
 			String id = jsonObject.getString("id");
+			//String id = "1";
 			List<Map<String, List<Map<String, Object>>>> list = this.productService
 					.findProductById(Integer.parseInt(id));
 			return new SecretResult(Errors.OK, list);
@@ -462,7 +467,12 @@ public class ProductController {
 		}
 	}
 	
-	//商品属性
+	
+	/**
+	 * 
+	 * 商品属性
+	 * 2018-05-08
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/setup/attribute")
 	public Result attribute(HttpServletRequest request) {
@@ -496,14 +506,20 @@ public class ProductController {
 			String typename = (String) m.get("typename");
 			String wx = (String) m.get("wx");
 			Integer pledge = (Integer) m.get("pledge");
+			JxShoppingCart cart = new JxShoppingCart();
 			if(p == 3){
+				JxPay jxPay = payWayService.findUnique("from JxPay where pay_typeid = "+proid+" and pay_typename = "+type+"");
+				prices = jxPay.getPay_price();
+				totalPrice = jxPay.getPay_price()*n;
 				pledge = 0;
+				cart.setSc_price(prices);
+			}else{
+				cart.setSc_price(Float.parseFloat(price.toString()));
 			}
 			//Float unitprice = (Float) m.get("unitprice");
 			Float s = totalPrice + (pledge * n);
 			
 			String s1 = System.nanoTime()+"";
-			JxShoppingCart cart = new JxShoppingCart();
 			cart.setPro_id(Integer.parseInt(proid));
 			cart.setPro_multiple(Integer.parseInt(ppdnum));
 			cart.setSc_number(Integer.parseInt(number));
@@ -515,7 +531,6 @@ public class ProductController {
 			cart.setSc_state(0);
 			cart.setSc_type(Integer.parseInt(type));
 			cart.setSc_weight(wx);
-			cart.setSc_price(Float.parseFloat(price.toString()));
 			cart.setSc_tag(s1);//标识码
 			jxShoppingCartService.save(cart);
 			Map<String,Object> m0 = jxShoppingCartService.findId(s1);
@@ -564,6 +579,7 @@ public class ProductController {
 	@RequestMapping(value = "/setup/buy")
 	public Result buy(HttpServletRequest request) {
 		try {
+			System.out.println("---立即购买---");
 			String authCode = HttpUtil.getRquestParamsByIO(request);
 			JSONObject jsonObject = JSONObject.fromObject(authCode);
 			String color = jsonObject.getString("color");//产品颜色
@@ -830,7 +846,7 @@ public class ProductController {
 		
 		
 		/**
-		 * 下订单--->修改版2017/07/07
+		 * 下订单--->修改版2018/05/08
 		 * @param request
 		 * @return
 		 */
@@ -843,6 +859,11 @@ public class ProductController {
 				JSONObject jsonObject = JSONObject.fromObject(authCode);
 				String id= jsonObject.getString("id");//购物车的id
 				String managerNo = jsonObject.getString("managerNo");//产品经理编号
+				System.out.println("id:"+id);
+				System.out.println("managerNo:"+managerNo);
+				/*String id= "2196,2197";//购物车的id
+				String managerNo = "61000000006";*/
+				
 				String fimOrderNo = RandomUtil.getRandom();//生成父订单号
 				//判断产品经理编号是否匹配
 				Boolean b = null;
@@ -856,6 +877,7 @@ public class ProductController {
 				}
 				//安装时间校验
 				String s2 = jsonObject.getString("settime");
+				//String s2 = "2018/06/11 00:51";
 				SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy/MM/dd HH:mm");
 				  Date date = simpleDateFormat.parse(s2);
 				  long l = date.getTime();
@@ -866,9 +888,11 @@ public class ProductController {
 				}
 				
 				Map<String, Object> map = this.jxOrderService.findAddressById(Long
-						.parseLong(jsonObject.getString("adrid")));//地址id
+						.parseLong(jsonObject.getString("adrid")));//地址id125
 				
-				
+				/*Map<String, Object> map = this.jxOrderService.findAddressById(Long
+						.parseLong("125"));//地址id125
+*/				
 				JxOrderItem item = new JxOrderItem();
 				//根据购物车id，得到商品项
 				int sum = jxShoppingCartService.findNumbers(id);
@@ -891,12 +915,24 @@ public class ProductController {
 					String color1 = (String) m2.get("color");//商品颜色
 					int number1 = (Integer) m2.get("number");//购买数量
 					int ppdnum1 = (Integer) m2.get("ppdnum");//商品倍数
+					int ppdnum5 = (Integer) m2.get("ppdnum");//商品倍数
 					String url1 = (String) m2.get("url");//商品图片地址
 					int type1 = (Integer) m2.get("type");//包年/包流量
+					//根据商品Id查找商品优惠价格
+					JxSale jxSale = jxSaleService.findUnique("from jx_sale where sale_status = 1 and prot_type = "+proid1+" ");
+					float salePrice = 0f;
+					if(jxSale == null ){
+						salePrice = 0;
+					}else{
+						salePrice = jxSale.getSale_price();//优惠价格
+					}
+					//float salePrice = jxSale.getSale_price();//优惠价格
+					//得到押金
 					List<Map<String, Object>> jxPrototal1 = prototalService.findparam(String.valueOf(proid1));
 					Map<String, Object> m0 = jxPrototal1.get(0);
 					Integer pledge1 = (Integer) m0.get("pledge");//押金
 					if(ppdnum1 == 3){
+						//dprice1 = (Float) m2.get("price");
 						pledge1 = 0;
 					}
 					Float zprice1 = (dprice1*number1*ppdnum1)+(pledge1*number1);//得到总价格
@@ -905,11 +941,11 @@ public class ProductController {
 						Float unitPrice = zprice1/number1;//单个订单的价格
 						JxOrder jo = new JxOrder();
 						if(type1 == 0){
-							jo.setPro_day(365 * ppdnum1);
+							jo.setPro_day(365 * ppdnum5);
 						}else{
 							JxPay jxPay = payWayService.findUnique(
 											"from JxPay where pay_typeid= '"+proid1+"' and pay_typename='"+type1+"'");
-							jo.setPro_restflow((jxPay.getPay_flow() * ppdnum1)+"");
+							jo.setPro_restflow((jxPay.getPay_flow() * ppdnum5)+"");
 						}
 						jo.setOrd_way(0);
 						jo.setOrd_protypeid(type1);
@@ -923,7 +959,8 @@ public class ProductController {
 						jo.setOrd_sertime(jsonObject.getString("settime"));
 						jo.setOrd_price(unitPrice);//单个订单的总价
 						jo.setOrd_pledge(pledge1);//押金
-						jo.setOrd_priceper(dprice1);//单价
+						jo.setOrd_priceper((dprice1 - (salePrice *number1 )));//单价
+						jo.setOrd_price((dprice1 - (salePrice *number1 )));//总价
 						jo.setOrd_multiple(ppdnum1);//倍数
 						jo.setOrd_no(fimOrderNo);//子订单号
 						jo.setFim_ord_no(fimOrderNo);//父订单号
@@ -932,6 +969,7 @@ public class ProductController {
 						jo.setOrd_status(0);
 						jo.setOrd_imgurl(url1);
 						jo.setOrd_proname(proname1);
+						jo.setSale_price((salePrice * number1));//优惠价格
 			  	        jxOrderService.save(jo);
 			  	        
 					//保存父订单到订单表
@@ -939,7 +977,7 @@ public class ProductController {
 					Double f = (Double) m3.get("price");
 					Float totalPrice = Float.parseFloat(f.toString());
 					item.setOrditem_no(fimOrderNo);
-					item.setOrder_price(totalPrice);
+					item.setOrder_price(totalPrice);//总价
 					item.setAdr_id((String) map.get("address"));
 					item.setPh_no((String) map.get("phone"));
 					item.setOrditem_receivename((String) map.get("name"));
@@ -953,6 +991,7 @@ public class ProductController {
 					item.setOdritem_managerno(managerNo);
 					item.setOrditem_sertime(jsonObject.getString("settime"));
 					item.setOrd_proname(proname1);
+					item.setPay_price((salePrice * number1));
 		  	        JxOrderItem josave = jxOrderItemServic.save(item);
 		  	        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 					Map<String, Object> map1 = new HashMap<String, Object>();
@@ -961,6 +1000,7 @@ public class ProductController {
 					map1.put("context", josave.getOrd_proname());
 					map1.put("paytype", josave.getOrditem_protypeid());
 					map1.put("tag", "1");//标记
+					map1.put("pay_price", josave.getPay_price());//优惠总额
 					list.add(map1);
 					//清空购物车
 		  	        int del = jxShoppingCartService.delProduct(id);
@@ -976,8 +1016,17 @@ public class ProductController {
 						String color = (String) p.get("color");//商品颜色
 						int number = (Integer) p.get("number");//购买数量
 						int ppdnum = (Integer) p.get("ppdnum");//商品倍数
+						int ppdnum6 = (Integer) p.get("ppdnum");//商品倍数
 						String url = (String) p.get("url");//商品图片地址
 						int type = (Integer) p.get("type");//包年/包流量
+						//商品优惠
+						JxSale jxSale2 = jxSaleService.findUnique("from jx_sale where sale_status = 1 and prot_type = "+proid+" ");
+						float salePrice2 = 0f;
+						if(jxSale2 == null ){
+							salePrice2 = 0;
+						}else{
+							salePrice2 = jxSale2.getSale_price();//优惠价格
+						}
 						List<Map<String, Object>> jxPrototal = prototalService.findparam(String.valueOf(proid));
 						Map<String, Object> m = jxPrototal.get(0);
 						Integer pledge = (Integer) m.get("pledge");//押金
@@ -987,13 +1036,25 @@ public class ProductController {
 					 * 多订单情况
 					 */
 						if(ppdnum == 3){
+							ppdnum = 1;
 							pledge = 0;
 						}
 						Float zprice = (dprice*number*ppdnum)+(pledge*number);//得到总价格
+						System.out.println(zprice);
+						System.out.println(dprice);
+						System.out.println(number);
+						System.out.println(ppdnum);
+						System.out.println(pledge);
+						System.out.println("-----------");
 						if(type == 0 || type == 1){
 							for(int j= 0;j < number; j++){
 								System.out.println("---多个订单---");
 								Float unitPrice = zprice/number;//单个订单的价格
+								System.out.println(unitPrice);
+								Float s5 = unitPrice - (salePrice2);
+								System.out.println("总价:"+s5);
+								Float s6 = dprice - (salePrice2);
+								System.out.println("单价:"+s6);
 								JxOrder jo = new JxOrder();
 								SimpleDateFormat format1 = new SimpleDateFormat("yy",Locale.getDefault());
 					    		Date date1 = new Date();
@@ -1010,11 +1071,12 @@ public class ProductController {
 								jo.setPro_id(proid);
 								jo.setOrd_managerno(managerNo);
 								jo.setOrd_ordertype(0);
-								jo.setOrd_sertime(jsonObject.getString("settime"));
-								jo.setOrd_price(unitPrice);//单个订单的总价
+								jo.setOrd_sertime(s2);
+								//jo.setOrd_sertime(jsonObject.getString("settime"));
+								jo.setOrd_price((unitPrice - (salePrice2)));//单个订单的总价
 								jo.setOrd_pledge(pledge);//押金
-								jo.setOrd_priceper(dprice);//单价
-								jo.setOrd_multiple(ppdnum);//倍数
+								jo.setOrd_priceper((dprice - (salePrice2)));//单价
+								jo.setOrd_multiple(ppdnum6);//倍数
 								jo.setOrd_no(ordItemNo);//子订单号
 								jo.setFim_ord_no(fimOrderNo);//父订单号
 								jo.setOrd_addtime(new Date());
@@ -1022,13 +1084,14 @@ public class ProductController {
 								jo.setOrd_status(0);
 								jo.setOrd_imgurl(url);
 								jo.setOrd_proname(proname);
+								jo.setSale_price(salePrice2);
 								//新增
 								if(type == 0){
-									jo.setPro_day(365 * ppdnum);
+									jo.setPro_day(365 * ppdnum6);
 								}else{
 									JxPay jxPay = payWayService.findUnique(
 											"from JxPay where pay_typeid= '"+proid+"' and pay_typename='"+type+"'");
-									jo.setPro_restflow((jxPay.getPay_flow() * ppdnum1)+"");
+									jo.setPro_restflow((jxPay.getPay_flow() * ppdnum6)+"");
 								}
 					  	        jxOrderService.save(jo);
 							}
@@ -1038,6 +1101,9 @@ public class ProductController {
 						Map<String,Object> m1 = jxOrderService.findTotalPrices(fimOrderNo);
 						Double f = (Double) m1.get("price");
 						Float totalPrice = Float.parseFloat(f.toString());
+						System.out.println("最终价格:"+totalPrice);
+						Double yh = (Double) m1.get("sale_price");
+						Float jxyh = Float.parseFloat(yh.toString());
 						//Float totalPrices = Float.parseFloat(totalPrice);
 						item.setOrditem_no(fimOrderNo);
 						item.setOrder_price(totalPrice);
@@ -1046,6 +1112,9 @@ public class ProductController {
 						item.setOrditem_receivename((String) map.get("name"));
 						item.setU_id(userid);
 						item.setOrditem_protypeid(type);
+						System.out.println("优惠:"+jxyh);
+						item.setPay_price(jxyh);	
+						
 					}	
 					item.setOrd_number(sum);//设置总数量
 					item.setOrditem_addtime(new Date());
@@ -1053,7 +1122,8 @@ public class ProductController {
 					item.setOrditem_way(0);
 					item.setOrditem_ordertype(0);
 					item.setOdritem_managerno(managerNo);
-					item.setOrditem_sertime(jsonObject.getString("settime"));
+					//item.setOrditem_sertime(jsonObject.getString("settime"));
+					item.setOrditem_sertime(s2);
 					item.setOrd_proname("组合支付");
 		  	        JxOrderItem josave = jxOrderItemServic.save(item);
 		  	        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -1063,6 +1133,7 @@ public class ProductController {
 					map1.put("context", josave.getOrd_proname());
 					map1.put("paytype", josave.getOrditem_protypeid());
 					map1.put("tag", "0");//标记
+					map1.put("pay_price", josave.getPay_price());//优惠总额
 					list.add(map1);
 					//清空购物车
 		  	        int del = jxShoppingCartService.delProduct(id);

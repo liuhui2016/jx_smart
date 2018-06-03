@@ -98,10 +98,11 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			if(type1 == 0){
 				if(ppdnum1 == 3){
 					pledge = 0;
+					totalPrice1 = (number1*price1)+(pledge * number1);
 				}else{
 					pledge = (Integer) map0.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge * number1);
 				String years = "包年购买:"+" "+j.get("ppdnum")+"年";
 				j.put("yearsorflow", years);
 				j.put("pledge", (pledge *number1));
@@ -109,10 +110,11 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			}else{
 				if(ppdnum1 == 3){
 					pledge = 0;
+					totalPrice1 = (number1*price1)+(pledge * number1);
 				}else{
 					pledge = (Integer) map0.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge * number1);
 				int s1 = (Integer) j.get("number");
 				int prepaidTraffic = (int) ((price1 * ppdnum1)/unitprice);
 				String years = "流量预付:"+" "+prepaidTraffic+"升"+"("+price1+"*"+ppdnum1+"/"+unitprice+"="+prepaidTraffic+"升"+")";
@@ -141,10 +143,11 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			if(type1 == 0){
 				if(ppdnum1 == 3){
 					pledge1 = 0;
+					totalPrice1 = (number1*price1)+(pledge1 * number1);
 				}else{
 					pledge1 = (Integer) map01.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge1 * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge1 * number1);
 				String years = "包年购买:"+" "+j.get("ppdnum")+"年";
 				j.put("yearsorflow", years);
 				j.put("pledge", (pledge1 *number1));
@@ -152,10 +155,12 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			}else{
 				if(ppdnum1 == 3){
 					pledge1 = 0;
+					totalPrice1 = (number1*price1)+(pledge1 * number1);
+
 				}else{
 					pledge1 = (Integer) map01.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge1 * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge1 * number1);
 				int s1 = (Integer) j.get("number");
 				int prepaidTraffic = (int) ((price1 * ppdnum1)/unitprice1);
 				String years = "流量预付:"+" "+prepaidTraffic+"升"+"("+price1+"*"+ppdnum1+"/"+unitprice1+"="+prepaidTraffic+"升"+")";
@@ -183,10 +188,11 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			if(type1 == 0){
 				if(ppdnum1 == 3){
 					pledge2 = 0;
+					totalPrice1 = (number1*price1)+(pledge2 * number1);
 				}else{
 					pledge2 = (Integer) map02.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
 				String years = "包年购买:"+" "+j.get("ppdnum")+"年";
 				j.put("yearsorflow", years);
 				j.put("pledge", (pledge2*number1));
@@ -194,10 +200,50 @@ public class JxShoppingCartServiceImpl extends GenericManagerImpl<JxShoppingCart
 			}else{
 				if(ppdnum1 == 3){
 					pledge2 = 0;
+					totalPrice1 = (number1*price1)+(pledge2 * number1);
 				}else{
 					pledge2 = (Integer) map02.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
 				}
-				totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
+				int s1 = (Integer) j.get("number");
+				int prepaidTraffic = (int) ((price1 * ppdnum1)/unitprice2);
+				String years = "流量预付:"+" "+prepaidTraffic+"升"+"("+price1+"*"+ppdnum1+"/"+unitprice2+"="+prepaidTraffic+"升"+")";
+				j.put("yearsorflow", years);
+				j.put("pledge", (pledge2 *number1));
+				j.put("totalPrice", totalPrice1);
+			}
+		}
+		
+		
+		String sql4 = "select sc_id,u_id userid,pro_id proid,sc_model model,sc_weight weight,sc_price price,sc_color color,sc_name name,sc_number number,pro_multiple ppdnum,sc_imgurl url,sc_type type from jx_shopping_cart where u_id ='"+uid+"' and pro_id = 4 and sc_state = 1 ";
+		List<Map<String, Object>> list4 = this.jdbcTemplate.queryForList(sql4);
+		for(int i = 0; i<list4.size();i++){
+			Map<String,Object> j =list4.get(i);
+			int type1 = (Integer) j.get("type");
+			int number1 = (Integer) j.get("number");
+			int ppdnum1 = (Integer) j.get("ppdnum");
+			Float price1 = (Float) j.get("price");
+			Float totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
+			if(type1 == 0){
+				if(ppdnum1 == 3){
+					pledge2 = 0;
+					totalPrice1 = (number1*price1)+(pledge2 * number1);
+				}else{
+					pledge2 = (Integer) map02.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
+				}
+				String years = "包年购买:"+" "+j.get("ppdnum")+"年";
+				j.put("yearsorflow", years);
+				j.put("pledge", (pledge2*number1));
+				j.put("totalPrice", totalPrice1);
+			}else{
+				if(ppdnum1 == 3){
+					pledge2 = 0;
+					totalPrice1 = (number1*price1)+(pledge2 * number1);
+				}else{
+					pledge2 = (Integer) map02.get("pledge");
+					totalPrice1 = (number1*ppdnum1*price1)+(pledge2 * number1);
+				}
 				int s1 = (Integer) j.get("number");
 				int prepaidTraffic = (int) ((price1 * ppdnum1)/unitprice2);
 				String years = "流量预付:"+" "+prepaidTraffic+"升"+"("+price1+"*"+ppdnum1+"/"+unitprice2+"="+prepaidTraffic+"升"+")";

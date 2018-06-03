@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.game.bmanager.service.IJxPictureService;
 import com.game.bmanager.service.IJxPrototalService;
 import com.game.smvc.entity.JxOrder;
+import com.game.smvc.entity.JxPay;
 import com.game.smvc.entity.JxShoppingCart;
 import com.game.smvc.entity.result.Errors;
 import com.game.smvc.entity.result.Result;
@@ -58,7 +59,12 @@ public class ShoppingCartController {
 	@Autowired
 	private IJxPayWayService payWayService;
 	
-	//添加商品(加入购物车)
+	/**
+	 * 添加商品(加入购物车)
+	 * 2018-05-08
+	 * @param request
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/shoppingcart/addshoppingcart")
 	public Result addToShoppingCart(HttpServletRequest request) {
@@ -75,6 +81,12 @@ public class ShoppingCartController {
 			String uid = jsonObject.getString("userid");//用户id
 			String proid = jsonObject.getString("proid");//商品id
 			String type = jsonObject.getString("type");//包年还是包流量/交易类型
+			System.out.println("ppdnum:"+ppdnum);
+			if(ppdnum.equals("3")){
+				JxPay jxPay = payWayService.findUnique("from JxPay where pay_typeid = "+proid+" and pay_typename = "+type+"");
+				price = jxPay.getPay_price().toString();
+				System.out.println("price:"+price);
+			}
 			
 			//得到单价
 			/*List<Map<String, Object>> pe =  payWayService.findPrice(proid,type);
@@ -97,6 +109,7 @@ public class ShoppingCartController {
 			//根据uid去查找商品
 			JxShoppingCart map1 = jxShoppingCartService.findShoppingCarts(uid);
 			int state = jxShoppingCartService.selectnum(uid);//判断购物车是否有商品
+			System.out.println("prices:"+price);
 			//如果map1为空，则是第一次购买			
 			if(map1 == null || map1.getU_id() == null){
 				System.out.println("第一次");

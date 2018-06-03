@@ -138,11 +138,11 @@ function setvalue() {
 }
 
 function phoneChange(){
-	var phon = /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9])[0-9]{8}$/;
-	var value = $("#PAR_PHONE").val();
+	var withdrawal_amount = /^([0-9.]+)$/;
+	var value = $("#withdrawal_amount").val();
 	var f = false;
-	 if (!phon.test(value)) {
-		 $("#phoneSpan").text("你输入的号码不正确或者为空");
+	 if (!withdrawal_amount.test(value)) {
+		 $("#phoneSpan").text("你输入金额不正确");
 	 }else{
 		 f = true;
 		 $("#phoneSpan").text(" "); 
@@ -158,7 +158,7 @@ function phoneChange(){
 </head>
 <body>
 <div class="currloca">
-  <p>${auth.fullMenu}${id==null?'&nbsp;»&nbsp;<span>新增合伙人</span>':'&nbsp;»&nbsp;<span>修改合伙人</span>' }</p>
+  <p>${auth.fullMenu}${id==null?'&nbsp;»&nbsp;<span>提现管理</span>':'&nbsp;»&nbsp;<span>提现管理</span>' }</p>
   <div class="sitemap">
   	<span style="display:block;float:left"><s:actionmessage theme="custom"/></span>
     <span id="showMap"><img onclick="showMap();return false;" id="sMap" class="pointer" width="64" height="18" title="后台导航" src="${ctx}/images/map.gif"/></span>
@@ -166,7 +166,7 @@ function phoneChange(){
 </div>
 <div class="container">
   <!-- 内容区域 -->
-  <div class="itemtitle"><h2>${id==null?'新增合伙人':'修改合伙人' }</h2></div>
+  <div class="itemtitle"><h2>${id==null?'修改创客金额':'修改创客金额' }</h2></div>
       <!-- 附加信息-->
   <div id="message" class="message">
     <span style="font-weight: bold;font-size: 14px;"><!-- 提示：资源列表... --></span>
@@ -182,142 +182,24 @@ function phoneChange(){
 		<a href="javascript:closediv();"><font style="font-size:18px;">关闭</font></a>
 	</div>
 </div>  
-  <form id="inputForm" action="partner!save.action" method="post" enctype="multipart/form-data" >
+  <form id="inputForm" action="trades!updateMoney.action" method="post" enctype="multipart/form-data" >
 	  <!-- 列表区域-->
 	  <div id="content" class="content input">
 	    <div id="indiv" style="width:100%;OVERFLOW-X:auto;">
 	    </div>
 	    	<input type="hidden" name="id" value="${id}"/>
 			<input type="hidden" name="authId" value="${authId}"/>
+			<input type="hidden" name="withdrawal_order" value="${withdrawal_order}"/>
 			<table class="tab_cont" width="" cellspacing="0" cellpadding="0" border="0" align="left">
 				<tbody>
 				    <tr>
-				      <th class="first" width="130">标准信息
-				      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				      <a href="partners!input.action?authId=${authId}">睿投</a>
-				      </th>
+				      <th class="first" width="130">标准信息</th>
 				      <th class="last" colspan="3"></th>
 				    </tr>
-				    <tr>
-						<td class="right"><span class="red">*</span>合伙人姓名:</td>
-						<td colspan="2">
-							<input  type="text" name="PAR_NAME" size="40" id="PAR_NAME" maxlength="150px" value="${pAR_NAME}"/>
-							<span id="parNameSpan"></span>
-						</td>
-					</tr>
 					<tr>
-						<td class="right"><span class="red">*</span>合伙人级别:</td>
+						<td class="right"><span class="red">*</span>提现金额:</td>
 						<td colspan="3">
-								<select id="PAR_LEVEL" name="PAR_LEVEL">
-									<option value='1' <c:if test='${PAR_LEVEL== "1"}'>selected='selected'</c:if>>运营商</option> 
-									<option value='2' <c:if test='${PAR_LEVEL== "2"}'>selected='selected'</c:if>>创客</option>
-									<%-- <option value="3" <c:if test='${PAR_LEVEL== "3"}'>selected='selected'</c:if>>区</option>
-									<option value="4" <c:if test='${PAR_LEVEL== "4"}'>selected='selected'</c:if>>产品经理</option> --%>
-								</select>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right"><span class="red">*</span>合伙人所在地区:</td>
-						<td>
-							<div>
-							    <select id="s_province" name="s_province"></select>  
-								<select id="s_city" name="s_city"></select>  
-								<select id="s_county" name="s_county"></select>
-								<script class="resources library" src="${ctx}/js/area.js" type="text/javascript"></script>
-					   			 <span id="areaId" style="color:red"></span>
-								<script type="text/javascript">_init_area();setvalue();</script>
-					    	</div>
-					    </td>
-					</tr>
-					
-					<tr>
-						<td class="right">上级合伙人:</td>
-						<td colspan="3">
-							<input type="text" id="PAR_PARENT" name="PAR_PARENT" value="${PAR_PARENT}" style="width: 100px" />
-							<input type="button" onclick="selectDlg('partner!selectresourcer.action', '选择上级合伙人');" value="选择上级合伙人"/>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right">上级合伙人编号:</td>
-						<td colspan="3">
-							<input type="text" id="parParentid" name="parParentid" value="${parParentid}" style="width: 320px" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right"><span class="red">*</span>详细地址:</td>
-						<td colspan="3">
-							<input type="text" id="PAR_ADDRESS" name="PAR_ADDRESS" value="${PAR_ADDRESS}" style="width: 320px" />
-						</td>
-					</tr>
-					<tr>
-						<td class="right"><span class="red">*</span>合伙人联系电话:</td>
-						<td colspan="3">
-							<input type="text" id="PAR_PHONE" name="PAR_PHONE" value="${PAR_PHONE}" onchange="phoneChange()" style="width: 320px" /><span id="phoneSpan" style="color:red"></span>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right"><span class="red">*</span>建店信息:</td>
-						<td colspan="3">
-							<c:if test="${par_shop == 1}">
-							<input id="par_shop" name="par_shop" type="radio" value="1" checked="checked" />建店
-							<input id="par_shop" name="par_shop" type="radio" value="0"/>未建店
-							</c:if>
-							
-							<c:if test="${par_shop == 0}">
-							<input id="par_shop" name="par_shop" type="radio" value="1"/>建店
-							<input id="par_shop" name="par_shop" type="radio" value="0" checked="checked"/>未建店
-							</c:if>
-							
-						
-							
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right"><span class="red">*</span>合同信息:</td>
-						<td colspan="3">
-							<c:if test="${par_pact == 1}">
-							<input id="par_pact" name="par_pact" type="radio" value="1" checked="checked"/>按照合同
-							<input id="par_pact" name="par_pact" type="radio" value="0"/>未按照合同
-							</c:if>
-							
-							<c:if test="${par_pact == 0}">
-							<input id="par_pact" name="par_pact" type="radio" value="1"/>按照合同
-							<input id="par_pact" name="par_pact" type="radio" value="0" checked="checked"/>未按照合同
-							</c:if>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right"><span class="red">*</span>权限信息:</td>
-						<td colspan="3">
-							<c:if test="${ispermissions == 1}">
-							<input id="ispermissions" name="ispermissions" type="radio" value="1" checked="checked"/>有权限
-							<input id="ispermissions"name="ispermissions" type="radio" value="0"/>无权限
-							</c:if>
-							
-							<c:if test="${ispermissions == 0}">
-							<input id="ispermissions" name="ispermissions" type="radio" value="1"/>有权限
-							<input id="ispermissions"name="ispermissions" type="radio" value="0" checked="checked"/>无权限
-							</c:if>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right">身份证号码:</td>
-						<td colspan="3">
-							<input type="text" id="card_number" name="card_number" value="${card_number}" style="width: 320px" />
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="right">订单号:</td>
-						<td colspan="3">
-							<input type="text" id="order_no" name="order_no" value="${order_no}" style="width: 320px" />
+							<input type="text" id="withdrawal_amount" name="withdrawal_amount" value="${withdrawal_amount}" onchange="phoneChange()" style="width: 320px" /><span id="phoneSpan" style="color:red"></span>
 						</td>
 					</tr>
 					

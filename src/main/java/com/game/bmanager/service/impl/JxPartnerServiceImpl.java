@@ -39,7 +39,7 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	@Override
 	public Page<JxPartner> querySubordinate(Page<JxPartner> page, Long parentid) {
 		page = partnerDao.findPageOnSql(page,
-				"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_parentid= '"+parentid+"' ");
+				"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,three_years_numbers,order_no from jx_partner where par_parentid= '"+parentid+"' ");
 		
 	/*	page = partnerDao.findPageOnSql(page,
 				"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions from jx_partner where par_parentid in (1,2,3,4)");
@@ -60,14 +60,14 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 			String par_level) {
 		if(par_level.equals("2")){
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level in (1,2)");
+					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no，three_years_numbers from jx_partner where par_level in (1,2)");
 		}else if(par_level.equals("3")){
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level in (1,2,3)");
+					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no,three_years_numbers from jx_partner where par_level in (1,2,3)");
 		
 		}else{
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level=?", par_level);
+					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no,three_years_numbers from jx_partner where par_level=?", par_level);
 		
 		}
 		
@@ -79,15 +79,15 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 			String par_level, String par_name,Long parId) {
 		if(par_name != null && parId == null){
 		pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-				"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level=" + par_level
+				"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no from jx_partner where par_level=" + par_level
 						+ " and PAR_NAME like '%" + par_name + "%'");
 		}else if("".equals(par_name) && parId !=null){
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level=" + par_level
+					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no from jx_partner where par_level=" + par_level
 							+ " and id =" + parId);
 		}else{
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number from jx_partner where par_level=" + par_level
+					"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,total_number,card_number,order_no from jx_partner where par_level=" + par_level
 							+ " and PAR_NAME like '%" + par_name + "%' and id ="+parId);
 		}
 		return pageResourcer;
@@ -97,11 +97,11 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	public Page<JxPartner> queryProvince(Page<JxPartner> page, String userid) {
 		if (userid.equals("admin")) {
 			//page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions from jx_partner where par_parentid is null or par_parentid='' ");
-			page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where par_level in (1,2,3,4,-1,-2,-3) ORDER BY  id asc ");
+			page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where par_level in (1,2,3,4,-1,-2,-3) ORDER BY  id asc ");
 		} else if(userid.equals("ruize")){
-			page = partnerDao.findPageOnSql(page,"select P.id, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,card_number from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_level in (-1)");
+			page = partnerDao.findPageOnSql(page,"select P.id, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number,P.order_no from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_level in (-1)");
 		}else{
-			page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where id =" + userid);
+			page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where id =" + userid);
 			
 		}
 		return page;
@@ -110,7 +110,7 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	@Override
 	public Page<JxPartner> dimQueryProvince(Page<JxPartner> page,
 			String parName, Long id,String userid,String lever) {
-		String sql = "select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where ";
+		String sql = "select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where ";
 		if(userid.equals("admin")){
 			if (parName != null && id == null) {
 				sql = sql + "PAR_NAME like '%" + parName + "%'";
@@ -210,7 +210,7 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	public Page<JxPartner> querySubordinates(Page<JxPartner> page, String parentid) {
 		System.out.println(parentid);
 		page = partnerDao.findPageOnSql(page,
-		"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.total_number,P.three_years_numbers,P.card_number from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = '"+parentid+"' ");
+		"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.total_number,P.three_years_numbers,P.card_number,P.order_no from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = '"+parentid+"' ");
 		return page;
 	}
 
@@ -228,7 +228,7 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 		String s = jdbcTemplate.queryForObject(sql, String.class);
 		System.out.println("dddd:"+s);
 		page = partnerDao.findPageOnSql(page,
-				"select DISTINCT  P.par_other, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_parentid = '"+s+"' ");
+				"select DISTINCT  P.par_other, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number,P.order_no from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_parentid = '"+s+"' ");
 				//"select P.par_other, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id from jx_partner P where P.par_level = '"+s+"'");
 		return page;
 	}
@@ -238,11 +238,11 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 			Page<JxPartner> pageResourcer, String par_levels) {
 		if(par_levels.equals("-2")){
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
-					"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = A.username and P.par_level in(-1,-2)");
+					"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number,P.order_no from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = A.username and P.par_level in(-1,-2)");
 		}else{
 			pageResourcer = partnerDao.findPageOnSql(pageResourcer,
 					//"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum from jx_partner where par_level=?", par_levels);
-					"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = A.username and P.par_level = '"+par_levels+"' ");
+					"select A.username, P.par_name,P.par_level,P.par_parentid,P.par_parent,P.par_area,P.par_address,P.par_phone,P.par_other,P.par_sellernum,P.id,P.par_shop,P.par_pact,P.ispermissions,P.total_number,P.three_years_numbers,P.card_number,P.order_no from jx_partner P,acc_user A where P.par_name = A.real_name and P.par_other = A.username and P.par_level = '"+par_levels+"' ");
 		}
 
 		return pageResourcer;
@@ -294,10 +294,10 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	@Override
 	public Page<JxPartner> queryProvinceByYYS(Page<JxPartner> page,
 			String userid) {
-		String sql1 = "select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where par_level in (1,2) ORDER BY  id asc";
+		String sql1 = "select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where par_level in (1,2) ORDER BY  id asc";
 		List<Map<String, Object>> order = this.jdbcTemplate.queryForList(sql1);
 		
-		page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where par_level in (1,2) ORDER BY  id asc ");
+		page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where par_level in (1,2) ORDER BY  id asc ");
 		return page;
 	}
 
@@ -310,7 +310,7 @@ public class JxPartnerServiceImpl extends GenericManagerImpl<JxPartner, Long>
 	@Override
 	public Page<JxPartner> queryProvinces(Page<JxPartner> page, String userid) {
 	
-		page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number from jx_partner where total_number >= 50 and three_years_numbers >=20 and par_level in (1,2) ORDER BY  id asc ");
+		page = partnerDao.findPageOnSql(page,"select id, par_name,par_level,par_parentid,par_parent,par_area,par_address,par_phone,par_other,par_sellernum,par_shop,par_pact,ispermissions,total_number,three_years_numbers,card_number,order_no from jx_partner where total_number >= 50 and three_years_numbers >=20 and par_level in (1,2) ORDER BY  id asc ");
 		return page;
 	}
 
